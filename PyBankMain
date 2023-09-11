@@ -1,0 +1,94 @@
+import os
+import csv
+
+#create lists to store data
+profit = []
+months = []
+totalmonths = []
+totalprofit = []
+averagenetchange = []
+greatestincrease = []
+greatestdecrease = []
+
+#set counters
+totalmonths = 0
+totalprofit = 0
+initialprofit = 0
+change = 0
+value = 0
+
+#open the path
+csvpath = os.path.join("PyBank\\Resources\\budget_data.csv")
+
+with open(csvpath) as csvfile:
+    csvreader = csv.reader(csvfile, delimiter=",")
+    csvheader = next(csvreader)
+
+    firstrow = next(csvreader)
+    totalmonths += 1
+    totalprofit += int(firstrow[1])
+    value = int(firstrow[1])
+
+
+    #read all the rows
+    for row in csvreader:
+        months.append(row[0])
+
+        change = int(row[1]) - value
+        profit.append(change)
+        value = int(row[1])
+
+        #totalprofit = profit + int(row[1])
+
+        totalmonths += 1
+
+        totalprofit = totalprofit + int(row[1])
+
+
+
+    #sum profits
+    averagenetchange = sum(profit) / len(profit)
+
+    #find max and min, greatest increase and greatest decrease
+    greatestdecrease = min(profit)
+    decreaseindex = profit.index(greatestdecrease)
+    decreasemonth = months[decreaseindex]
+
+    greatestincrease = max(profit)
+    increaseindex = profit.index(greatestincrease)
+    increasemonth = months[increaseindex]
+
+    # Zip lists together
+    #roster = list(zip(totalmonths, totalprofit, averagenetchange, greatestincrease, greatestdecrease))
+
+
+    print("Financial Analysis")
+    print("------------------------------")
+    print(f"Total Months: {totalmonths}")
+    print(f"Total: $ {totalprofit}")
+    print(f"Average Change: $ {str(round(averagenetchange,2))}")
+    print(f"Greatest Increase in Profits: {increasemonth} $ {greatestincrease}")
+    print(f"Grestest Decrease in Profits: {decreasemonth} $ {greatestdecrease}")
+
+
+                
+# save the output file path
+
+
+outputfile = os.path.join("PyBank\\Resources\\budget_data_output.csv")
+
+# open the output file, create a header row, and then write the zipped object to the csv
+#with open(outputfile, "w", newline='') as datafile:
+PyBankoutput = open(outputfile, "w")
+
+line1 = "Financial Analysis"
+line2 = "------------------------------------------"
+line3 = str(f"Total Months: {str(totalmonths)}")
+line4 = str(f"Total: ${str(totalprofit)}")
+line5 = str(f"Average Change: ${str(round(averagenetchange,2))}")
+line6 = str(
+    f"Greatest Increase in Profits: {increasemonth} (${str(greatestincrease)})")
+line7 = str(
+    f"Greatest Decrease in Profits: {decreasemonth} (${str(greatestdecrease)})")
+PyBankoutput.write('{}\n{}\n{}\n{}\n{}\n{}\n{}\n'.format(
+    line1, line2, line3, line4, line5, line6, line7))
