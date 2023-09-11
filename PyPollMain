@@ -1,0 +1,90 @@
+import os
+import csv
+
+#create lists to store data
+candidateslist = []
+numberofvotes = []
+
+percentvotes = []
+
+#set a counter
+totalvotes = 0
+
+
+#open the path
+csvpath = os.path.join("PyPoll\\Resources\\election_data.csv")
+
+with open(csvpath) as csvfile:
+    csvreader = csv.reader(csvfile, delimiter=",")
+    csvheader = next(csvreader)
+
+
+
+    #read all the rows
+    for row in csvreader:
+
+        #vote counter
+        totalvotes += 1
+
+        #candidates
+        if row[2] not in candidateslist:
+            candidateslist.append(row[2])
+            index = candidateslist.index(row[2])
+            numberofvotes.append(1)
+
+        else:
+            index = candidateslist.index(row[2])
+            numberofvotes[index] += 1
+
+        
+
+    for votes in numberofvotes:
+        percentage = votes/totalvotes * 100
+
+        
+        percentage = "%.3f%%" % percentage
+        percentvotes.append(percentage)
+        
+
+    
+    #winner
+        winner = max(numberofvotes)
+        index = numberofvotes.index(winner)
+        winningcandidate = candidateslist[index]
+
+   
+
+    # Zip lists together
+    #roster = list(zip(candidates, percentvotes, numberofvotes, totalvotescast, winningcandidate))
+
+
+    print("Election Results")
+    print("------------------------------")
+    print(f"Total Votes: {str(totalvotes)}")
+    print("------------------------------")
+    for i in range(len(candidateslist)):
+        print(f"Candidate: \n {candidateslist[i]}: {(percentvotes[i])} ({str(numberofvotes[i])})")
+    print("------------------------------")
+    print(f"Winner: {winningcandidate}")
+    print("------------------------------")
+
+
+    #exporting
+
+    output_file = os.path.join("PyPoll\Resources\election_data_output.csv")
+
+PyPolloutput = open(output_file, "w")
+
+line1 = "Election Results"
+line2 = "--------------------------"
+line3 = str(f"Total Votes: {str(totalvotes)}")
+line4 = str("--------------------------")
+PyPolloutput.write('{}\n{}\n{}\n{}\n'.format(line1, line2, line3, line4))
+for i in range(len(candidateslist)):
+    line = str(
+        f"{candidateslist[i]}: {str(percentvotes[i])} ({str(numberofvotes[i])})")
+    PyPolloutput.write('{}\n'.format(line))
+line5 = "--------------------------"
+line6 = str(f"Winner: {winningcandidate}")
+line7 = "--------------------------"
+PyPolloutput.write('{}\n{}\n{}\n'.format(line5, line6, line7))
